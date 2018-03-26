@@ -90,6 +90,13 @@ public class Card extends ImageView {
         return false;   
     }
 
+    public static boolean isNextCorrect(Card cardOnTable, Card cardToCheck) {
+        if (cardOnTable.getRank().ordinal() - cardToCheck.getRank().ordinal() != 1) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isSameSuit(Card card1, Card card2) {
         return card1.getSuit() == card2.getSuit();
     }

@@ -78,7 +78,7 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        //TODO
+        System.out.println("I'm in EventHandler");
         if (pile != null) {
             handleValidMove(card, pile);
         } else {
@@ -111,9 +111,20 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
-        return true;
-    }
+        //if (destPile.getPileType() == PileType.TABLEAU) {
+            if (destPile.numOfCards()!= 0) {
+                if (Card.isOppositeColor(card, destPile.getTopCard()) 
+                    && Card.isNextCorrect(destPile.getTopCard(), card)) {
+                        return true;
+                }
+                return false;
+
+            } else if (card.getRank() == Card.Rank.KING) {
+               return true;
+            }
+            return false;
+        }
+        
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
