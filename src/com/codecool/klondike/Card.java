@@ -6,6 +6,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.util.*;
+public enum Suit {
+    DIAMONDS, HEARTS, CLUBS, SPADES
+}
+
+public enum Rank {
+    ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING
+}
 
 public class Card extends ImageView {
 
