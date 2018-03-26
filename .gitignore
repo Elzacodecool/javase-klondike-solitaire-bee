@@ -1,2 +1,4 @@
 out
 sources.list
+.DS_Store
+*.class
