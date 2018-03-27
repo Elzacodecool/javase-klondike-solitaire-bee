@@ -20,6 +20,7 @@ public class Pile extends Pane {
 
     public Pile(PileType pileType, String name, double cardGap) {
         this.pileType = pileType;
+        this.name = name;
         this.cardGap = cardGap;
     }
 
@@ -40,8 +41,7 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+        return cards.size();
     }
 
     public boolean isEmpty() {
@@ -49,7 +49,7 @@ public class Pile extends Pane {
     }
 
     public void clear() {
-        //TODO
+        cards.clear();
     }
 
     public void addCard(Card card) {
@@ -73,6 +73,13 @@ public class Pile extends Pane {
         else
             return cards.get(cards.size() - 1);
     }
+
+    public void flipTopCard() {
+        this.getTopCard().flip();
+
+    }
+
+    
 
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
