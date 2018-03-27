@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 public class Game extends Pane {
 
@@ -97,10 +98,16 @@ public class Game extends Pane {
     }
 
     public Game() {
-        deck = Card.createNewDeck();
+        deck = getRandomDeck();        
         initPiles();
         dealCards();
     }
+
+    private List <Card> getRandomDeck() {
+        List <Card> deck = Card.createNewDeck();
+        Collections.shuffle(deck);
+        return deck;
+    } 
 
     public void addMouseEventHandlers(Card card) {
         card.setOnMousePressed(onMousePressedHandler);
