@@ -73,6 +73,11 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public void flipTopCard() {
+        this.getTopCard().flip();
+
+    }
+
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
         BackgroundFill backgroundFill = new BackgroundFill(Color.gray(0.0, 0.2), null, null);
