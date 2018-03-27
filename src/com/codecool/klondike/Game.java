@@ -62,7 +62,7 @@ public class Game extends Pane {
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
-        if (this.isCardlastOnPile(card) || activePile.getPileType() == Pile.PileType.DISCARD) {
+        if ( || activePile.getPileType() == Pile.PileType.DISCARD) {
             double offsetX = e.getSceneX() - dragStartX;
             double offsetY = e.getSceneY() - dragStartY;
             
@@ -163,7 +163,7 @@ public class Game extends Pane {
         } else if (destPile.getPileType() == PileType.FOUNDATION) {
             if (destPile.numOfCards()> 0) {
                 System.out.println(destPile.numOfCards());
-                if (Card.isTheSameSign(card, destPile.getTopCard()) 
+                if (Card.isSameSuit(card, destPile.getTopCard()) 
                     && Card.isNextCorrect(destPile.getTopCard(), card)) {
                         return true;
                 }
