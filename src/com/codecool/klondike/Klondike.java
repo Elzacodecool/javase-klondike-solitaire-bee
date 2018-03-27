@@ -30,9 +30,6 @@ public class Klondike extends Application {
         
         primaryStage.setTitle("Klondike Solitaire");
         primaryStage.setScene(new Scene(game, WINDOW_WIDTH, WINDOW_HEIGHT));
-        if(game.isGameWon()) {
-            System.exit(0);
-        }
         primaryStage.show();
     }
 
