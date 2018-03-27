@@ -49,7 +49,7 @@ public class Pile extends Pane {
     }
 
     public void clear() {
-        System.out.println("I'm clearing sth!!!!!!!");
+        cards.clear();
     }
 
     public void addCard(Card card) {
