@@ -45,7 +45,8 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
-        } else if(card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && card.isFaceDown()) {
+        } else if(card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && card.isFaceDown()
+        && this.isCardlastOnPile(card)) {
             card.flip();
         }
     };
@@ -64,19 +65,21 @@ public class Game extends Pane {
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
-        double offsetX = e.getSceneX() - dragStartX;
-        double offsetY = e.getSceneY() - dragStartY;
-        
-        draggedCards.clear();
-        draggedCards.add(card);
+        if (this.isCardlastOnPile(card) || activePile.getPileType() == Pile.PileType.DISCARD) {
+            double offsetX = e.getSceneX() - dragStartX;
+            double offsetY = e.getSceneY() - dragStartY;
+            
+            draggedCards.clear();
+            draggedCards.add(card);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+            card.getDropShadow().setRadius(20);
+            card.getDropShadow().setOffsetX(10);
+            card.getDropShadow().setOffsetY(10);
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+            card.toFront();
+            card.setTranslateX(offsetX);
+            card.setTranslateY(offsetY);
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -103,8 +106,17 @@ public class Game extends Pane {
             if (pile.numOfCards() != 2) {
                 return false;
             }
-        }
+        }       
         return true;
+    }
+
+    public boolean isCardlastOnPile(Card card) {
+        for(Pile pile: tableauPiles) {
+            if (pile.getCards().indexOf(card) == (pile.getCards().size()-1)){
+                return true;
+            }   
+        }
+        return false;
     }
 
     public Game() {
