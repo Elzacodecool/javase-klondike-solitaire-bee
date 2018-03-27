@@ -202,6 +202,9 @@ public class Game extends Pane {
                 getChildren().add(card);
             }
         }
+        for (Pile tableauPile : tableauPiles) {
+            tableauPile.getTopCard().flip();
+        }
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
