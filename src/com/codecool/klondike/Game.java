@@ -89,16 +89,13 @@ public class Game extends Pane {
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         if (pile == null) {
             pile = getValidIntersectingPile(card, foundationPiles);
-            System.out.println("test");
         }
-        System.out.println("I'm in EventHandler"); //TODO!!!!
-        if (pile != null) {
-            handleValidMove(card, pile);
-            System.out.println("test2");
-        } else {
-            draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards.clear();
+        if (pile == null) {
+            pile = card.getContainingPile();
         }
+        handleValidMove(card, pile);
+        draggedCards.clear();
+        
     };
 
     public boolean isGameWon() {
