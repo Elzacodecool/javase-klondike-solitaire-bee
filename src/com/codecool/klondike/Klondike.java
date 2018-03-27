@@ -36,15 +36,12 @@ public class Klondike extends Application {
         primaryStage.show();
     }
 
-    public void swapThemes(Game game){
-        game.setTableBackground(new Image("/table/red.png"));
-    }
 
     public void initializeButtons(Game game){
-        changeThemeButton = new Button("red theme");
+        changeThemeButton = new Button("Themes");
         changeThemeButton.setLayoutY(30);
         changeThemeButton.setOnAction(e -> {
-            swapThemes(game);
+            ThemesBox.display("Themes", "", game);
         });
         game.getChildren().add(changeThemeButton);
     }
