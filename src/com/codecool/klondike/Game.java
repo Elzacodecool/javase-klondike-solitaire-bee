@@ -14,6 +14,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,13 +66,13 @@ public class Game extends Pane {
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
-        if ( || activePile.getPileType() == Pile.PileType.DISCARD) {
+        if (!card.isFaceDown() || activePile.getPileType() == Pile.PileType.DISCARD) {
             double offsetX = e.getSceneX() - dragStartX;
             double offsetY = e.getSceneY() - dragStartY;
             
             draggedCards.clear();
-            draggedCards.add(card);
-
+            addCards(card);
+        
             card.getDropShadow().setRadius(20);
             card.getDropShadow().setOffsetX(10);
             card.getDropShadow().setOffsetY(10);
@@ -81,6 +82,19 @@ public class Game extends Pane {
             card.setTranslateY(offsetY);
         }
     };
+
+    private void addCards(Card firstCard) {
+        Boolean hasCard = false;
+        for(Card card: firstCard.getContainingPile().getCards()) {
+            if(card.getSuit().equals(firstCard.getSuit()) && card.getRank().equals(firstCard.getRank())) {
+                hasCard = true;
+            }
+            if(hasCard) {
+                draggedCards.add(card);
+            }
+        }
+        System.out.println(draggedCards.size());
+    }
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
@@ -94,7 +108,6 @@ public class Game extends Pane {
             pile = card.getContainingPile();
         }
         handleValidMove(card, pile);
-        draggedCards.clear();
         
     };
 
