@@ -18,7 +18,7 @@ public class ThemesBox {
         window.setMinWidth(250);
 
         Button changeRed = new Button("Red");
-        // changeRed.setOnAction(e -> game.setTableBackground(new Image("/table/red.png")));
+        changeRed.setOnAction(e -> game.setTableBackground(new Image("/table/red.png")));
 
         Label label = new Label();
         label.setText(message);
@@ -27,6 +27,7 @@ public class ThemesBox {
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(label, closeButton);
+        layout.getChildren().add(changeRed);
         layout.setAlignment(Pos.CENTER);
 
         //Display window and wait for it to be closed
