@@ -7,6 +7,8 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
+import com.codecool.klondike.Pile.PileType;
+
 public class Card extends ImageView {
 
     private Suit suit;
@@ -90,11 +92,24 @@ public class Card extends ImageView {
         return false;   
     }
 
-    public static boolean isNextCorrect(Card cardOnTable, Card cardToCheck) {
-        if (cardOnTable.getRank().ordinal() - cardToCheck.getRank().ordinal() != 1) {
-            return false;
+    public static boolean isTheSameSign(Card card1, Card card2) {
+        if (card1.suit == card2.suit) {
+            return true;
         }
-        return true;
+        return false;   
+    }
+
+    public static boolean isNextCorrect(Card cardOnTable, Card cardToCheck) {
+        int difference = cardOnTable.getRank().ordinal() - cardToCheck.getRank().ordinal();
+         
+        if (cardOnTable.containingPile.getPileType() == PileType.FOUNDATION) {
+            if(difference == -1) {
+                return true;
+            }
+        } else if(difference == 1) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
