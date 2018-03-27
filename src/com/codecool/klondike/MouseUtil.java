@@ -19,6 +19,7 @@ import java.util.List;
 public class MouseUtil {
 
     public static void slideBack(Card card) {
+        System.out.println("Slide back");
         double sourceX = card.getLayoutX() + card.getTranslateX();
         double sourceY = card.getLayoutY() + card.getTranslateY();
         double targetX = card.getLayoutX();
@@ -37,7 +38,7 @@ public class MouseUtil {
         double destCardGap = destPile.getCardGap();
         double targetX;
         double targetY;
-
+        System.out.println("Slide to dest");
         if (destPile.isEmpty()) {
             targetX = destPile.getLayoutX();
             targetY = destPile.getLayoutY();
