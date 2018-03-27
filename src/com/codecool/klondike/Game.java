@@ -78,12 +78,12 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        System.out.println("I'm in EventHandler");
+        System.out.println("I'm in EventHandler"); //TODO!!!!
         if (pile != null) {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            // draggedCards = null;
+            draggedCards.clear();
         }
     };
 
@@ -123,7 +123,8 @@ public class Game extends Pane {
                return true;
             }
             return false;
-        }
+       // }
+    }
         
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
@@ -193,7 +194,11 @@ public class Game extends Pane {
 
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
-        //TODO
+        for (int i = 0; i < 7 ; i++ ){
+            for (int j = 0; j < i+1; j++ ) {
+                tableauPiles.get(i).addCard(deckIterator.next());
+            }
+        }
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
