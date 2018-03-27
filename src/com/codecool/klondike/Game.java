@@ -97,7 +97,6 @@ public class Game extends Pane {
                 draggedCards.add(card);
             }
         }
-        System.out.println(draggedCards.size());
     }
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -160,7 +159,6 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         if (destPile.getPileType() == PileType.TABLEAU) {
             if (destPile.numOfCards()> 0) {
-                System.out.println(destPile.numOfCards());
                 if (Card.isOppositeColor(card, destPile.getTopCard()) 
                     && Card.isNextCorrect(destPile.getTopCard(), card)) {
                         return true;
@@ -171,8 +169,9 @@ public class Game extends Pane {
                return true;
             }
         } else if (destPile.getPileType() == PileType.FOUNDATION) {
-            if (destPile.numOfCards()> 0) {
-                System.out.println(destPile.numOfCards());
+            if(draggedCards.size() > 1) {
+                return false;
+            } else if (destPile.numOfCards()> 0) {
                 if (Card.isSameSuit(card, destPile.getTopCard()) 
                     && Card.isNextCorrect(destPile.getTopCard(), card)) {
                         return true;
