@@ -6,19 +6,25 @@ import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
+import java.util.ArrayList;
 
 public class ThemesBox {
 
     public static void display(String title, String message, Game game) {
+        ArrayList<String> settings = new ArrayList<String>();
+
         Stage window = new Stage();
 
-        //Block events to other windows
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle(title);
         window.setMinWidth(250);
 
-        Button changeRed = new Button("Red");
-        changeRed.setOnAction(e -> game.setTableBackground(new Image("/table/red.png")));
+        Button changeRed = new Button("DARK THEME");
+        changeRed.setOnAction(e -> {
+            settings.add("table/red.png\n");
+            settings.add("card_images/darkTheme/");
+            Common.saveThemeSettings(settings);
+        });
 
         Label label = new Label();
         label.setText(message);
@@ -30,7 +36,6 @@ public class ThemesBox {
         layout.getChildren().add(changeRed);
         layout.setAlignment(Pos.CENTER);
 
-        //Display window and wait for it to be closed
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
