@@ -39,18 +39,42 @@ public class Klondike extends Application {
     }
 
     public void initializeButtons(Game game, Stage primaryStage){
+        // newGame = new Button("New Game");
+        // newGame.setLayoutY(60);
+        // newGame.setOnAction(e -> {
+        //     primaryStage.close();
+        //     startGame(primaryStage);
+        // });
+        initializeNewGameButton(game, primaryStage);
+        initializeThemesButton(game);
+
+        // changeThemeButton = new Button("Themes");
+        // changeThemeButton.setLayoutY(30);
+        // changeThemeButton.setOnAction(e -> {
+        //     ThemesBox.display("Themes", "", game);
+        // });
+        // game.getChildren().add(changeThemeButton);
+        // game.getChildren().add(newGame);
+    }
+
+    private void initializeNewGameButton(Game game, Stage stage){
         newGame = new Button("New Game");
-        newGame.setLayoutY(60);
+        newGame.setLayoutY(10);
+        newGame.setLayoutX(10);
         newGame.setOnAction(e -> {
-            primaryStage.close();
-            startGame(primaryStage);
+            stage.close();
+            startGame(stage);
         });
+        game.getChildren().add(newGame);
+    }
+
+    private void initializeThemesButton(Game game){
         changeThemeButton = new Button("Themes");
-        changeThemeButton.setLayoutY(30);
+        changeThemeButton.setLayoutY(40);
+        changeThemeButton.setLayoutX(10);
         changeThemeButton.setOnAction(e -> {
             ThemesBox.display("Themes", "", game);
         });
         game.getChildren().add(changeThemeButton);
-        game.getChildren().add(newGame);
     }
 }
