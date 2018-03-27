@@ -42,7 +42,8 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
-        } else if(card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && card.isFaceDown()) {
+        } else if(card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && card.isFaceDown()
+        && this.isCardlastOnPile(card)) {
             card.flip();
         }
     };
@@ -97,6 +98,15 @@ public class Game extends Pane {
             }
         }
         return true;
+    }
+
+    public boolean isCardlastOnPile(Card card) {
+        for(Pile pile: tableauPiles) {
+            if (pile.getCards().indexOf(card) == (pile.getCards().size()-1)){
+                return true;
+            }   
+        }
+        return false;
     }
 
     public Game() {
