@@ -73,13 +73,17 @@ public class Game extends Pane {
             draggedCards.clear();
             addCards(card);
         
-            card.getDropShadow().setRadius(20);
-            card.getDropShadow().setOffsetX(10);
-            card.getDropShadow().setOffsetY(10);
+            for(Card draggedCard: draggedCards) {
+                draggedCard.getDropShadow().setRadius(20);
+                draggedCard.getDropShadow().setOffsetX(10);
+                draggedCard.getDropShadow().setOffsetX(10);
+                draggedCard.getDropShadow().setOffsetY(10);
 
-            card.toFront();
-            card.setTranslateX(offsetX);
-            card.setTranslateY(offsetY);
+                draggedCard.toFront();
+                draggedCard.setTranslateX(offsetX);
+                draggedCard.setTranslateY(offsetY);
+            }
+            
         }
     };
 
