@@ -37,6 +37,7 @@ public class MouseUtil {
         double destCardGap = destPile.getCardGap();
         double targetX;
         double targetY;
+        destPile.getCards().removeAll(cardsToSlide);
 
         if (destPile.isEmpty()) {
             targetX = destPile.getLayoutX();
@@ -50,7 +51,7 @@ public class MouseUtil {
             Card currentCard = cardsToSlide.get(i);
             double sourceX = currentCard.getLayoutX() + currentCard.getTranslateX();
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
-
+        
             animateCardMovement(currentCard, sourceX, sourceY, targetX,
                     targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(150),
                     e -> {
