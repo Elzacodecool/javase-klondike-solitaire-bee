@@ -29,7 +29,7 @@ public class Klondike extends Application {
     public void startGame(Stage primaryStage){
         Card.loadCardImages();
         Game game = new Game();
-        game.setTableBackground(new Image("/table/green.png"));
+        game.setTableBackground(new Image(Common.loadThemeSettings().get(0)));
 
         initializeButtons(game, primaryStage);
         
