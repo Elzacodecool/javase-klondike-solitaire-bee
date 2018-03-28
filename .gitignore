@@ -4,3 +4,4 @@ sources.list
 *.class
 .DS_Store
 *.txt
+resources/theme.txt
