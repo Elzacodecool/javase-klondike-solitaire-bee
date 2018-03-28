@@ -76,7 +76,6 @@ public class Pile extends Pane {
 
     public void flipTopCard() {
         this.getTopCard().flip();
-
     }
 
     public void setBlurredBackground() {
