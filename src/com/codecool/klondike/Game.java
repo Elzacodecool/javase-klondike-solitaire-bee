@@ -38,19 +38,23 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
-    private List<List<List<Pile>>> moveHistory = new ArrayList() <>;
+    private List<List<List<Pile>>> moveHistory = new ArrayList<>();
 
     private void addMoveToHistory() {
-        List oneMovePiles = new List()<>;
-        oneMovePiles.add(new List(this.stockPile));
-        oneMovePiles.add(new List(this.discardPile));
+        List<List<Pile>> oneMovePiles = new ArrayList<>();
+        List<Pile> stockList = new ArrayList<>();
+        List<Pile> discardList = new ArrayList<>();
+        stockList.add(this.stockPile);
+        discardList.add(this.discardPile);
+        oneMovePiles.add(stockList);
+        oneMovePiles.add(discardList);
         oneMovePiles.add(this.foundationPiles);
         oneMovePiles.add(this.tableauPiles);
         this.moveHistory.add(oneMovePiles);
     }
 
-    private void loadUndoMove() {
-        List lastMovePiles = moveHistory.get(moveHistory.size() - 1);
+    public void loadUndoMove() {
+        List<List<Pile>> lastMovePiles = moveHistory.get(moveHistory.size() - 1);
         this.stockPile = lastMovePiles.get(0).get(0);
         this.discardPile = lastMovePiles.get(1).get(0);
         this.foundationPiles = lastMovePiles.get(2);
@@ -219,6 +223,7 @@ public class Game extends Pane {
             if (!pile.equals(card.getContainingPile()) &&
                     isOverPile(card, pile) &&
                     isMoveValid(card, pile))
+                this.addMoveToHistory();
                 result = pile;
         }
         return result;
