@@ -131,6 +131,20 @@ public class Card extends ImageView {
             }
         }
     }
+
+    protected static boolean isPlaceForCardInFoundation(Card card, Pile pile) {
+            if (pile.numOfCards() > 0) {
+                if (Card.isSameSuit(card, pile.getTopCard()) 
+                        && Card.isNextCorrect(pile.getTopCard(), card)) {
+                            return true;
+                } else {
+                    return false;
+                }
+            } else if (card.getRank() == Card.Rank.ACE) {
+               return true;
+            } 
+            return false;
+    }
     
     public static enum Suit {
         DIAMONDS, HEARTS, CLUBS, SPADES;
