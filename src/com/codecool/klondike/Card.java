@@ -120,12 +120,13 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back.png");
+        String cardsDirectory = Common.loadThemeSettings().get(1);
+        cardBackImage = new Image(cardsDirectory + "card_back.png");
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 String cardName = suit.toString() + rank.toString();
                 String cardId = "S" + suit + "R" + rank;
-                String imageFileName = "card_images/" + cardName + ".png";
+                String imageFileName = cardsDirectory + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
