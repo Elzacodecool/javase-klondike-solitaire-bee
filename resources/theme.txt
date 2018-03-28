@@ -1,0 +1,2 @@
+table/red.png
+card_images/darkTheme/
