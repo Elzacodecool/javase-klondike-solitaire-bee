@@ -47,11 +47,13 @@ public class Klondike extends Application {
         newGame = new Button("New Game");
         newGame.setLayoutY(10);
         newGame.setLayoutX(10);
-        newGame.setOnAction(e -> {
-            stage.close();
-            startGame(stage);
-        });
+        newGame.setOnAction(e -> restartGame(stage));
         game.getChildren().add(newGame);
+    }
+
+    public void restartGame(Stage stage){
+        stage.close();
+        startGame(stage);
     }
 
     private void initializeThemesButton(Game game){
