@@ -1,2 +1,2 @@
-table/red.png
-card_images/darkTheme/
+table/green.png
+card_images/lightTheme/
