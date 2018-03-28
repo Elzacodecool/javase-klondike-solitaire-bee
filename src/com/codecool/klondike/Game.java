@@ -38,6 +38,16 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
+    private List<List<List<Pile>>> moveHistory = new ArrayList() <>;
+
+    private void addMoveToHistory() {
+        List oneMovePiles = new List()<>;
+        oneMovePiles.add(new List(this.stockPile));
+        oneMovePiles.add(new List(this.discardPile));
+        oneMovePiles.add(this.foundationPiles);
+        oneMovePiles.add(this.tableauPiles);
+        this.moveHistory.add(oneMovePiles);
+    }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
 
@@ -49,9 +59,6 @@ public class Game extends Pane {
             System.out.println("Placed " + card + " to the waste.");
             
         } 
-
-         
-        
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -60,10 +67,7 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
-        dragStartY = e.getSceneY();
-
-        
-        
+        dragStartY = e.getSceneY();        
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -88,10 +92,7 @@ public class Game extends Pane {
                 draggedCard.setTranslateX(offsetX);
                 draggedCard.setTranslateY(offsetY);
             }
-            
-        }
-        
-        
+        }   
         };
 
     private void addCards(Card firstCard) {
