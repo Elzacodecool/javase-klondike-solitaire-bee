@@ -32,13 +32,12 @@ public class MouseUtil {
                 });
     }
 
-    public static void slideToDest(List<Card> cardsToSlide, Pile destPile) {
+    public static void slideToDest(List<Card> cardsToSlide, Pile destPile, Game game) {
         if (cardsToSlide == null)
             return;
         double destCardGap = destPile.getCardGap();
         double targetX;
         double targetY;
-        System.out.println("Slide to dest");
         if (destPile.isEmpty()) {
             targetX = destPile.getLayoutX();
             targetY = destPile.getLayoutY();
@@ -59,6 +58,7 @@ public class MouseUtil {
                         currentCard.getDropShadow().setRadius(2);
                         currentCard.getDropShadow().setOffsetX(0);
                         currentCard.getDropShadow().setOffsetY(0);
+                        game.flipIfNeeded();
                     });
         }
     }

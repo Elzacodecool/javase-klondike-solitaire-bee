@@ -39,13 +39,18 @@ public class Game extends Pane {
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
+
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
+            
         } 
+
+         
+        
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -55,6 +60,9 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
+
+        
+        
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -62,7 +70,7 @@ public class Game extends Pane {
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
-        if ( || activePile.getPileType() == Pile.PileType.DISCARD) {
+        if ( isCardlastOnPile(card)|| activePile.getPileType() == Pile.PileType.DISCARD) {
             double offsetX = e.getSceneX() - dragStartX;
             double offsetY = e.getSceneY() - dragStartY;
             
@@ -78,6 +86,7 @@ public class Game extends Pane {
             card.setTranslateY(offsetY);
         }
         
+        
         };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -91,18 +100,9 @@ public class Game extends Pane {
         if (pile == null) {
             pile = card.getContainingPile();
         }
-        for(Pile element: tableauPiles) {
-            System.out.println("in tableau");
-            for (Card item : element.getCards()) {
-                if(item.isFaceDown() && isCardlastOnPile(item)) {
-                    item.flip();
-                    System.out.println("Flip");
-                }
-            }
-        }
-        handleValidMove(card, pile);
-        draggedCards.clear();
         
+        handleValidMove(card, pile);
+        draggedCards.clear();     
     };
 
     public boolean isGameWon() {
@@ -112,6 +112,16 @@ public class Game extends Pane {
             }
         }       
         return true;
+    }
+
+    public void flipIfNeeded() {
+        for(Pile element: tableauPiles) {
+            for (Card item : element.getCards()) {
+                if(item.isFaceDown() & isCardlastOnPile(item)) {
+                    item.flip();
+                }
+            }
+        }
     }
 
     public boolean isCardlastOnPile(Card card) {
@@ -205,7 +215,7 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
         System.out.println(msg);
-        MouseUtil.slideToDest(draggedCards, destPile);
+        MouseUtil.slideToDest(draggedCards, destPile, this);
         draggedCards.clear();
     }
 
