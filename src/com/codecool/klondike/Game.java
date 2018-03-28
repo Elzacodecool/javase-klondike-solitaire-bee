@@ -47,8 +47,16 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
-            
-        }    
+        }  
+        if(e.getClickCount() == 2){
+            System.out.println("Double click");
+            for(Pile pile : foundationPiles) {
+                if (Card.isPlaceForCardInFoundation(card, pile)) {
+                    card.moveToPile(pile);
+                    this.flipIfNeeded();
+                }
+            }
+        }  
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -97,6 +105,7 @@ public class Game extends Pane {
         }
     }
 
+    
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
             return;
