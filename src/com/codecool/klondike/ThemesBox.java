@@ -24,6 +24,7 @@ public class ThemesBox {
             settings.add("table/red.png\n");
             settings.add("card_images/darkTheme/");
             Common.saveThemeSettings(settings);
+            window.close();
         });
 
         Button lightTheme = new Button("LIGHT THEME");
@@ -31,15 +32,14 @@ public class ThemesBox {
             settings.add("table/green.png\n");
             settings.add("card_images/lightTheme/");
             Common.saveThemeSettings(settings);
+            window.close();
         });
 
         Label label = new Label();
         label.setText(message);
-        Button closeButton = new Button("Close this window");
-        closeButton.setOnAction(e -> window.close());
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(label, closeButton);
+        layout.getChildren().add(label);
         layout.getChildren().add(changeRed);
         layout.getChildren().add(lightTheme);
         layout.setAlignment(Pos.CENTER);
