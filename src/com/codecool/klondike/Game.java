@@ -49,6 +49,15 @@ public class Game extends Pane {
         this.moveHistory.add(oneMovePiles);
     }
 
+    private void loadUndoMove() {
+        List lastMovePiles = moveHistory.get(moveHistory.size() - 1);
+        this.stockPile = lastMovePiles.get(0).get(0);
+        this.discardPile = lastMovePiles.get(1).get(0);
+        this.foundationPiles = lastMovePiles.get(2);
+        this.tableauPiles = lastMovePiles.get(3);
+        moveHistory.remove(lastMovePiles);
+    }
+
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
 
         Card card = (Card) e.getSource();
