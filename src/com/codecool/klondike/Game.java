@@ -14,6 +14,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,24 +71,40 @@ public class Game extends Pane {
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
-        if ( isCardlastOnPile(card)|| activePile.getPileType() == Pile.PileType.DISCARD) {
+        if (!card.isFaceDown() || activePile.getPileType() == Pile.PileType.DISCARD) {
             double offsetX = e.getSceneX() - dragStartX;
             double offsetY = e.getSceneY() - dragStartY;
             
             draggedCards.clear();
-            draggedCards.add(card);
+            addCards(card);
+        
+            for(Card draggedCard: draggedCards) {
+                draggedCard.getDropShadow().setRadius(20);
+                draggedCard.getDropShadow().setOffsetX(10);
+                draggedCard.getDropShadow().setOffsetX(10);
+                draggedCard.getDropShadow().setOffsetY(10);
 
-            card.getDropShadow().setRadius(20);
-            card.getDropShadow().setOffsetX(10);
-            card.getDropShadow().setOffsetY(10);
-
-            card.toFront();
-            card.setTranslateX(offsetX);
-            card.setTranslateY(offsetY);
+                draggedCard.toFront();
+                draggedCard.setTranslateX(offsetX);
+                draggedCard.setTranslateY(offsetY);
+            }
+            
         }
         
         
         };
+
+    private void addCards(Card firstCard) {
+        Boolean hasCard = false;
+        for(Card card: firstCard.getContainingPile().getCards()) {
+            if(card.getSuit().equals(firstCard.getSuit()) && card.getRank().equals(firstCard.getRank())) {
+                hasCard = true;
+            }
+            if(hasCard) {
+                draggedCards.add(card);
+            }
+        }
+    }
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
@@ -160,7 +177,6 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         if (destPile.getPileType() == PileType.TABLEAU) {
             if (destPile.numOfCards()> 0) {
-                System.out.println(destPile.numOfCards());
                 if (Card.isOppositeColor(card, destPile.getTopCard()) 
                     && Card.isNextCorrect(destPile.getTopCard(), card)) {
                         return true;
@@ -171,8 +187,9 @@ public class Game extends Pane {
                return true;
             }
         } else if (destPile.getPileType() == PileType.FOUNDATION) {
-            if (destPile.numOfCards()> 0) {
-                System.out.println(destPile.numOfCards());
+            if(draggedCards.size() > 1) {
+                return false;
+            } else if (destPile.numOfCards()> 0) {
                 if (Card.isSameSuit(card, destPile.getTopCard()) 
                     && Card.isNextCorrect(destPile.getTopCard(), card)) {
                         return true;
