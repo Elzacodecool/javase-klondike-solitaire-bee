@@ -36,6 +36,14 @@ public class Card extends ImageView {
         setEffect(dropShadow);
     }
 
+    public void setBackFace(Image backFace) {
+        this.backFace = backFace;
+    }
+
+    public void setFrontFace(Image frontFace) {
+        this.frontFace = frontFace;
+    }
+
     public Suit getSuit() {
         return suit;
     }
@@ -67,6 +75,18 @@ public class Card extends ImageView {
     public void moveToPile(Pile destPile) {
         this.getContainingPile().getCards().remove(this);
         destPile.addCard(this);
+    }
+
+    public void reloadImage() {
+        String cardsDirectory = Common.loadThemeSettings().get(1);
+        cardBackImage = new Image(cardsDirectory + "card_back.png");
+        setBackFace(cardBackImage);
+        String cardName = suit.toString() + rank.toString();
+        String imageFileName = cardsDirectory + cardName + ".png";
+        Image cardFrontImage = new Image(imageFileName);
+        setFrontFace(cardFrontImage);
+        setImage(faceDown ? backFace : frontFace); 
+        System.out.println("Reloaded card graphics");
     }
 
     public void flip() {
