@@ -280,6 +280,18 @@ public class Game extends Pane {
         }
     }
 
+    public void changeCardsSkin() {
+        System.out.println("Running change Card Skin");
+        Iterator<Card> deckIterator = deck.iterator();
+
+        while(deckIterator.hasNext()) {
+            System.out.println("Running while");
+            Card card = deckIterator.next();
+            card.reloadImage();
+            // deckIterator.remove();
+        }
+    }
+
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
         for (int i = 0; i < 7 ; i++ ){
