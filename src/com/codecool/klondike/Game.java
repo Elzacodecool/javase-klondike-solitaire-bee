@@ -23,7 +23,7 @@ import com.codecool.klondike.Pile.PileType;
 import java.util.Collections;
 
 public class Game extends Pane {
-
+    private MoveHistory moves = new MoveHistory(this);
     private List<Card> deck = new ArrayList<>();
 
     private Pile stockPile;
@@ -38,38 +38,35 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
-    private List<List<List<Pile>>> moveHistory = new ArrayList<>();
-
-    private void addMoveToHistory() {
-        List<List<Pile>> oneMovePiles = new ArrayList<>();
-        List<Pile> stockList = new ArrayList<>();
-        List<Pile> discardList = new ArrayList<>();
-        stockList.add(this.stockPile);
-        discardList.add(this.discardPile);
-        oneMovePiles.add(stockList);
-        oneMovePiles.add(discardList);
-        oneMovePiles.add(this.foundationPiles);
-        oneMovePiles.add(this.tableauPiles);
-        this.moveHistory.add(oneMovePiles);
+    protected MoveHistory getMoves() {
+        return this.moves;
     }
 
-    public void loadUndoMove() {
-        List<List<Pile>> lastMovePiles = moveHistory.get(moveHistory.size() - 1);
-        this.stockPile = lastMovePiles.get(0).get(0);
-        this.discardPile = lastMovePiles.get(1).get(0);
-        this.foundationPiles = lastMovePiles.get(2);
-        this.tableauPiles = lastMovePiles.get(3);
-        moveHistory.remove(lastMovePiles);
+    protected Pile getStockPile() {
+        return this.stockPile;
+    }
+
+    protected Pile getDiscardPile() {
+        return this.discardPile;
+    }
+
+    protected List<Pile> getFoundationPiles() {
+        return this.foundationPiles;
+    }
+
+    protected List<Pile> getTableauPiles() {
+        return this.tableauPiles;
     }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
 
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+            this.moves.addMoveToHistory();
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
-            System.out.println("Placed " + card + " to the waste.");
+            // System.out.println("Placed " + card + " to the waste.");
             
         } 
     };
@@ -97,7 +94,7 @@ public class Game extends Pane {
         
             for(Card draggedCard: draggedCards) {
                 draggedCard.getDropShadow().setRadius(20);
-                draggedCard.getDropShadow().setOffsetX(10);
+                // draggedCard.getDropShadow().setOffsetX(10);
                 draggedCard.getDropShadow().setOffsetX(10);
                 draggedCard.getDropShadow().setOffsetY(10);
 
@@ -181,11 +178,12 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
+        card.setOnMouseEntered(onMouseReleasedHandler);
     }
 
     public void refillStockFromDiscard() {
         //TODO
-        System.out.println("Stock refilled from discard pile.");
+        // System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
@@ -223,7 +221,6 @@ public class Game extends Pane {
             if (!pile.equals(card.getContainingPile()) &&
                     isOverPile(card, pile) &&
                     isMoveValid(card, pile))
-                this.addMoveToHistory();
                 result = pile;
         }
         return result;
@@ -236,7 +233,7 @@ public class Game extends Pane {
             return card.getBoundsInParent().intersects(pile.getTopCard().getBoundsInParent());
     }
 
-    private void handleValidMove(Card card, Pile destPile) {
+    protected void handleValidMove(Card card, Pile destPile) {
         String msg = null;
         if (destPile.isEmpty()) {
             if (destPile.getPileType().equals(Pile.PileType.FOUNDATION))
@@ -246,7 +243,8 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        System.out.println(msg);
+        // System.out.println(msg);
+        this.moves.addMoveToHistory();
         MouseUtil.slideToDest(draggedCards, destPile, this);
         draggedCards.clear();
     }
