@@ -21,17 +21,23 @@ public class ThemesBox {
 
         Button changeRed = new Button("DARK THEME");
         changeRed.setOnAction(e -> {
+            System.out.println("Pressed dark theme button");
             settings.add("table/red.png\n");
             settings.add("card_images/darkTheme/");
             Common.saveThemeSettings(settings);
+            game.changeCardsSkin();
+            game.setTableBackground(new Image(Common.loadThemeSettings().get(0)));
             window.close();
         });
 
         Button lightTheme = new Button("LIGHT THEME");
         lightTheme.setOnAction(e -> {
+            System.out.println("Pressed light theme button");
             settings.add("table/green.png\n");
             settings.add("card_images/lightTheme/");
             Common.saveThemeSettings(settings);
+            game.changeCardsSkin();
+            game.setTableBackground(new Image(Common.loadThemeSettings().get(0)));
             window.close();
         });
 
