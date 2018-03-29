@@ -59,10 +59,11 @@ public class Game extends Pane {
     }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
-
+        
+        this.moves.addMoveToHistory();
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
-            this.moves.addMoveToHistory();
+            
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -82,7 +83,9 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
+        System.out.println(card.toString());
         Pile activePile = card.getContainingPile();
+        System.out.print(activePile.getName());
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
         if (!card.isFaceDown() || activePile.getPileType() == Pile.PileType.DISCARD) {
@@ -244,7 +247,7 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
         // System.out.println(msg);
-        this.moves.addMoveToHistory();
+        // this.moves.addMoveToHistory();
         MouseUtil.slideToDest(draggedCards, destPile, this);
         draggedCards.clear();
     }
