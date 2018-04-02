@@ -59,9 +59,8 @@ public class Game extends Pane {
     }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
-        this.moves.addMoveToHistory(); 
-        
         Card card = (Card) e.getSource();
+        
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {           
             card.moveToPile(discardPile);
             card.flip();
@@ -84,6 +83,7 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
+        this.moves.addMoveToHistory(); 
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
     };
@@ -190,7 +190,6 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
-        card.setOnMouseEntered(onMouseReleasedHandler);
     }
 
     public void refillStockFromDiscard() {
