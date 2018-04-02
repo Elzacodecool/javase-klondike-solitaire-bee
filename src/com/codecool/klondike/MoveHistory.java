@@ -4,27 +4,33 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class MoveHistory{
     private Game game;
-    protected List<List<ObservableList<Card>>> moveHistory;
+    protected List<List<ObservableList<Card>>> cardsHistory;
+    protected List<Map<Card, Boolean>> faceDownHistory;
     
 
     public MoveHistory (Game game) {
         this.game = game;
-        this.moveHistory = new ArrayList<>();
+        this.cardsHistory = new ArrayList<>();
+        this.faceDownHistory = new ArrayList<>();
     }
 
     protected void addMoveToHistory() {
-        List<ObservableList<Card>> oneMoveCards = new ArrayList<>();
-        oneMoveCards = makeMove();
+        List<ObservableList<Card>> oneMoveCards = makeOneMoveCards();
+        Map<Card, Boolean> oneMoveFaceDown = makeOneMoveFaceDown(oneMoveCards);
+
 
         if(checkLastMoveIsDifferent(oneMoveCards)) {
-            moveHistory.add(oneMoveCards);
+            cardsHistory.add(oneMoveCards);
+            faceDownHistory.add(oneMoveFaceDown);
         }
     }
 
-    private List<ObservableList<Card>> makeMove() {
+    private List<ObservableList<Card>> makeOneMoveCards() {
         List<ObservableList<Card>> oneMoveCards = new ArrayList<>();
         oneMoveCards = addCardsToList(game.getStockPile(), oneMoveCards);
         oneMoveCards = addCardsToList(game.getDiscardPile(), oneMoveCards);
@@ -38,11 +44,28 @@ public class MoveHistory{
         return oneMoveCards;
     }
 
+    private Map<Card, Boolean> makeOneMoveFaceDown(List<ObservableList<Card>> oneMoveCards) {
+        Map<Card, Boolean> oneMoveFaceDown = new HashMap<>();
+        Boolean faceDown;
+
+        for(ObservableList<Card> cards: oneMoveCards) {
+            for(Card card: cards) {
+                if(card.isFaceDown() == true){
+                    faceDown = true;
+                } else {
+                    faceDown = false;
+                }
+                oneMoveFaceDown.put(card, faceDown);
+            }
+        }
+        return oneMoveFaceDown;
+    }
+
     private Boolean checkLastMoveIsDifferent(List<ObservableList<Card>> oneMoveCards) {
-        if(moveHistory.isEmpty()) {
+        if(cardsHistory.isEmpty()) {
             return true;
         }
-        List<ObservableList<Card>> lastMoveCards = moveHistory.get(moveHistory.size() - 1);
+        List<ObservableList<Card>> lastMoveCards = cardsHistory.get(cardsHistory.size() - 1);
         for(int i = 0; i < lastMoveCards.size(); i++) {
             if(oneMoveCards.get(i).size() != lastMoveCards.get(i).size()) {
                 return true;
@@ -61,20 +84,22 @@ public class MoveHistory{
     protected void loadUndoMove() {
         Pile pile;
 
-        while(!checkLastMoveIsDifferent(makeMove())) {
-            moveHistory.remove(moveHistory.size() - 1);
+        while(!checkLastMoveIsDifferent(makeOneMoveCards())) {
+            cardsHistory.remove(cardsHistory.size() - 1);
+            faceDownHistory.remove(faceDownHistory.size() - 1);
         }
 
-        if(!moveHistory.isEmpty()) {
+        if(!cardsHistory.isEmpty()) {
             List<ObservableList<Card>> lastMove = FXCollections.observableArrayList();
-            lastMove.addAll(moveHistory.get(moveHistory.size() - 1));
+            lastMove.addAll(cardsHistory.get(cardsHistory.size() - 1));
 
             for(int i = 0; i < lastMove.size(); i++) {
                 pile = getPileByIndex(i);
                 pile.setCards(lastMove.get(i));
                 changePropertiesCards(pile);
             }
-            moveHistory.remove(lastMove);
+            cardsHistory.remove(lastMove);
+            faceDownHistory.remove(faceDownHistory.size() - 1);
         }
     }
 
@@ -94,22 +119,15 @@ public class MoveHistory{
     }
 
     private void changePropertiesCards(Pile pile) {
+        Map<Card, Boolean> oneMoveFaceDown = faceDownHistory.get(faceDownHistory.size() - 1);
         Card card;
 
         for(int j = 0; j < pile.numOfCards(); j++) {
             card = pile.getCards().get(j);
             card.setContainingPile(pile);
 
-            if(pile.getPileType() == Pile.PileType.STOCK && !card.isFaceDown()) {
+            if(card.isFaceDown() != oneMoveFaceDown.get(card)) {
                 card.flip();
-            } else if(pile.getPileType() == Pile.PileType.DISCARD && card.isFaceDown()) {
-                card.flip();
-            } else if(pile.getPileType() == Pile.PileType.TABLEAU && !card.isFaceDown()) {
-                if(j < pile.numOfCards() - 1){
-                    if (!Card.isNextCorrect(card, pile.getCards().get(j + 1))) {
-                        card.flip();
-                    }
-                }
             }
             
             card.setLayoutX(pile.getLayoutX());
