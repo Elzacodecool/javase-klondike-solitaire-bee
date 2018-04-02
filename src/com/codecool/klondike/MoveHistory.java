@@ -82,12 +82,15 @@ public class MoveHistory{
     }
 
     protected void loadUndoMove() {
-        Pile pile;
-
         while(!checkLastMoveIsDifferent(makeOneMoveCards())) {
             cardsHistory.remove(cardsHistory.size() - 1);
             faceDownHistory.remove(faceDownHistory.size() - 1);
         }
+        undo();        
+    }
+
+    protected void undo() {
+        Pile pile;
 
         if(!cardsHistory.isEmpty()) {
             List<ObservableList<Card>> lastMove = FXCollections.observableArrayList();

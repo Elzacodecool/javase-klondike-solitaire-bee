@@ -16,6 +16,8 @@ import javafx.util.Duration;
 
 import java.util.List;
 
+import com.codecool.klondike.Pile.PileType;
+
 public class MouseUtil {
 
     public static void slideBack(Card card) {
