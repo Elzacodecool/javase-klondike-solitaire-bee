@@ -37,7 +37,7 @@ public class Game extends Pane {
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
-    private static double DISCARD_GAP = 40;
+    protected static double DISCARD_GAP = 40;
 
     protected MoveHistory getMoves() {
         return this.moves;

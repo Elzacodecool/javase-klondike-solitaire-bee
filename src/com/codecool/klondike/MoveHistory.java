@@ -9,25 +9,46 @@ import java.util.HashMap;
 
 public class MoveHistory{
     private Game game;
-    protected List<List<ObservableList<Card>>> cardsHistory;
-    protected List<Map<Card, Boolean>> faceDownHistory;
+    private List<List<ObservableList<Card>>> cardsHistory;
+    private List<Map<Card, Boolean>> faceDownHistory;
+    private List<Map<Card, Double>> discardLayoutXHistory;
     
 
     public MoveHistory (Game game) {
         this.game = game;
         this.cardsHistory = new ArrayList<>();
         this.faceDownHistory = new ArrayList<>();
+        this.discardLayoutXHistory = new ArrayList<>();
     }
 
     protected void addMoveToHistory() {
         List<ObservableList<Card>> oneMoveCards = makeOneMoveCards();
         Map<Card, Boolean> oneMoveFaceDown = makeOneMoveFaceDown(oneMoveCards);
-
+        Map<Card, Double> OneMoveDiscardLayoutX = makeOneMoveLayoutX(game.getDiscardPile());
 
         if(checkLastMoveIsDifferent(oneMoveCards)) {
             cardsHistory.add(oneMoveCards);
             faceDownHistory.add(oneMoveFaceDown);
+            discardLayoutXHistory.add(OneMoveDiscardLayoutX);
         }
+    }
+
+
+    private Map<Card, Double> makeOneMoveLayoutX(Pile pile) {
+        Map<Card, Double> oneMoveLayuoutX = new HashMap<>();
+        Double gap;
+        for(Card card: pile.getCards()) {
+            if(card.getLayoutX() == pile.getLayoutX()) {
+                gap = (double) 0;
+            } else if(card.getLayoutX() - game.DISCARD_GAP == pile.getLayoutX()) {
+                gap = game.DISCARD_GAP;
+            } else {
+                gap = 2 * game.DISCARD_GAP;
+            }
+            oneMoveLayuoutX.put(card, gap);
+        }
+
+        return oneMoveLayuoutX;
     }
 
     private List<ObservableList<Card>> makeOneMoveCards() {
@@ -41,6 +62,7 @@ public class MoveHistory{
         for(Pile pile: game.getTableauPiles()) {
             oneMoveCards = addCardsToList(pile, oneMoveCards);
         }
+        
         return oneMoveCards;
     }
 
@@ -58,19 +80,23 @@ public class MoveHistory{
                 oneMoveFaceDown.put(card, faceDown);
             }
         }
+
         return oneMoveFaceDown;
     }
 
     private Boolean checkLastMoveIsDifferent(List<ObservableList<Card>> oneMoveCards) {
+        List<ObservableList<Card>> lastMoveCards = cardsHistory.get(cardsHistory.size() - 1);
+
         if(cardsHistory.isEmpty()) {
             return true;
         }
-        List<ObservableList<Card>> lastMoveCards = cardsHistory.get(cardsHistory.size() - 1);
+        
         for(int i = 0; i < lastMoveCards.size(); i++) {
             if(oneMoveCards.get(i).size() != lastMoveCards.get(i).size()) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -78,6 +104,7 @@ public class MoveHistory{
         ObservableList<Card> cards = FXCollections.observableArrayList();
         cards.addAll(pile.getCards());
         oneMoveCards.add(cards);
+
         return oneMoveCards;
     }
 
@@ -85,8 +112,9 @@ public class MoveHistory{
         while(!checkLastMoveIsDifferent(makeOneMoveCards())) {
             cardsHistory.remove(cardsHistory.size() - 1);
             faceDownHistory.remove(faceDownHistory.size() - 1);
+            discardLayoutXHistory.remove(discardLayoutXHistory.size() - 1);
         }
-        undo();        
+        this.undo();        
     }
 
     protected void undo() {
@@ -101,8 +129,10 @@ public class MoveHistory{
                 pile.setCards(lastMove.get(i));
                 changePropertiesCards(pile);
             }
+
             cardsHistory.remove(lastMove);
             faceDownHistory.remove(faceDownHistory.size() - 1);
+            discardLayoutXHistory.remove(discardLayoutXHistory.size() - 1);
         }
     }
 
@@ -118,27 +148,34 @@ public class MoveHistory{
         } else {
             pile = game.getTableauPiles().get(i-6);
         }
+
         return pile;
     }
 
     private void changePropertiesCards(Pile pile) {
         Map<Card, Boolean> oneMoveFaceDown = faceDownHistory.get(faceDownHistory.size() - 1);
+        Map<Card, Double> oneDiscardLayoutX = discardLayoutXHistory.get(discardLayoutXHistory.size() - 1);
         Card card;
+        Double gap;
 
-        for(int j = 0; j < pile.numOfCards(); j++) {
-            card = pile.getCards().get(j);
+        for(int i = 0; i < pile.numOfCards(); i++) {
+            card = pile.getCards().get(i);
             card.setContainingPile(pile);
 
             if(card.isFaceDown() != oneMoveFaceDown.get(card)) {
                 card.flip();
             }
+
+            if(pile.getPileType() == Pile.PileType.DISCARD) {
+                gap = oneDiscardLayoutX.get(card);
+            } else {
+                gap = (double) 0;
+            }
             
-            card.setLayoutX(pile.getLayoutX());
-            card.setLayoutY(j * pile.getCardGap() + pile.getLayoutY());
+            card.setLayoutX(pile.getLayoutX() + gap);
+            card.setLayoutY(pile.getLayoutY() + i * pile.getCardGap());
             card.setImage(card.isFaceDown() ? card.backFace : card.frontFace);
             card.toFront();
-          
         }
     }
-
 }
