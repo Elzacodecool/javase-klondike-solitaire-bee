@@ -16,7 +16,6 @@ public class MoveHistory{
     }
 
     protected void addMoveToHistory() {
-        System.out.print(moveHistory.size());
         List<ObservableList<Card>> oneMoveCards = new ArrayList<>();
         oneMoveCards = addCardsToList(game.getStockPile(), oneMoveCards);
         oneMoveCards = addCardsToList(game.getDiscardPile(), oneMoveCards);
@@ -31,15 +30,6 @@ public class MoveHistory{
     }
 
     private List<ObservableList<Card>> addCardsToList(Pile pile, List<ObservableList<Card>> oneMoveCards) {
-        // ObservableList<Card> cards = FXCollections.observableArrayList();
-        // Card card;
-        // for(Card c: pile.getCards()) {
-        //     card = new Card(c.getSuit(), c.getRank(), c.isFaceDown());
-        //     card.setContainingPile(c.getContainingPile());
-        //     cards.add(card);
-        // }
-        // oneMoveCards.add(cards);
-        // return oneMoveCards;
         ObservableList<Card> cards = FXCollections.observableArrayList();
         cards.addAll(pile.getCards());
         oneMoveCards.add(cards);
@@ -48,41 +38,55 @@ public class MoveHistory{
 
     protected void loadUndoMove() {
         Pile pile;
-        int j;
+
         if(!moveHistory.isEmpty()) {
             List<ObservableList<Card>> lastMove = FXCollections.observableArrayList();
             lastMove.addAll(moveHistory.get(moveHistory.size() - 1));
-            
-            int i = 0;
-            for(ObservableList<Card> cards: lastMove) {
-                System.out.println(cards.size());
-                if(i == 0) {
-                    pile = game.getStockPile();                    
-                } else if (i == 1) {
-                    pile = game.getDiscardPile();
-                } else if (i < 6) {
-                    pile = game.getFoundationPiles().get(i-2);
-                } else {
-                    pile = game.getTableauPiles().get(i-6);
-                }
 
-                pile.setCards(cards);
-                j = 0;
-                for(Card c: pile.getCards()) {
-                    c.setContainingPile(pile);
-                    if(i == 0) {
-                        c.DownFaceDown();
-                    }
-                    
-                    c.setLayoutX(pile.getLayoutX());
-                    c.setLayoutY(j * pile.getCardGap() + pile.getLayoutY());
-                    c.setImage(c.isFaceDown() ? c.backFace : c.frontFace);
-                    game.addMouseEventHandlers(c);                   
-                    j++;
-                }
-                i++;
+            for(int i = 0; i < lastMove.size(); i++) {
+                pile = getPileByIndex(i);
+                pile.setCards(lastMove.get(i));
+                changePropertiesCards(pile);
             }
             moveHistory.remove(lastMove);
+        }
+    }
+
+    private Pile getPileByIndex(int i) {
+        Pile pile;
+
+        if(i == 0) {
+            pile = game.getStockPile();               
+        } else if (i == 1) {
+            pile = game.getDiscardPile();
+        } else if (i < 6) {
+            pile = game.getFoundationPiles().get(i-2);
+        } else {
+            pile = game.getTableauPiles().get(i-6);
+        }
+        return pile;
+    }
+
+    private void changePropertiesCards(Pile pile) {
+        Card card;
+
+        for(int j = 0; j < pile.numOfCards(); j++) {
+            card = pile.getCards().get(j);
+            card.setContainingPile(pile);
+
+            if(pile.getPileType() == Pile.PileType.STOCK) {
+                card.DownFaceDown();
+            } else if(pile.getPileType() == Pile.PileType.TABLEAU) {
+                if(j < pile.numOfCards() - 1){
+                    if (!Card.isNextCorrect(card, pile.getCards().get(j + 1))) {
+                        card.DownFaceDown();
+                    }
+                }
+            }
+            
+            card.setLayoutX(pile.getLayoutX());
+            card.setLayoutY(j * pile.getCardGap() + pile.getLayoutY());
+            card.setImage(card.isFaceDown() ? card.backFace : card.frontFace);
         }
     }
 
