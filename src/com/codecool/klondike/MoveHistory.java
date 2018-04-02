@@ -115,6 +115,7 @@ public class MoveHistory{
             card.setLayoutX(pile.getLayoutX());
             card.setLayoutY(j * pile.getCardGap() + pile.getLayoutY());
             card.setImage(card.isFaceDown() ? card.backFace : card.frontFace);
+            card.toFront();
           
         }
     }

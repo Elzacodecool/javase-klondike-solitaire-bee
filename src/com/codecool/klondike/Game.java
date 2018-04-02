@@ -60,7 +60,7 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         this.moves.addMoveToHistory(); 
-        System.out.println(moves.moveHistory.size());
+        
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {           
             card.moveToPile(discardPile);
