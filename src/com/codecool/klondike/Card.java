@@ -48,10 +48,6 @@ public class Card extends ImageView {
         return faceDown;
     }
 
-    public void DownFaceDown() {
-        this.faceDown = true;
-    }
-
     public String getShortName() {
         return "S" + suit + "R" + rank;
     }

@@ -59,10 +59,10 @@ public class Game extends Pane {
     }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
-        
+        this.moves.addMoveToHistory(); 
+        System.out.println(moves.moveHistory.size());
         Card card = (Card) e.getSource();
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
-            this.moves.addMoveToHistory();            
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {           
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -243,7 +243,6 @@ public class Game extends Pane {
                     isMoveValid(card, pile))
                 
                 result = pile;
-                this.moves.addMoveToHistory();
         }
         return result;
     }

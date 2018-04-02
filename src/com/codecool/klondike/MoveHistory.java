@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class MoveHistory{
     private Game game;
-    private List<List<ObservableList<Card>>> moveHistory;
+    protected List<List<ObservableList<Card>>> moveHistory;
     
 
     public MoveHistory (Game game) {
@@ -16,6 +16,15 @@ public class MoveHistory{
     }
 
     protected void addMoveToHistory() {
+        List<ObservableList<Card>> oneMoveCards = new ArrayList<>();
+        oneMoveCards = makeMove();
+
+        if(checkLastMoveIsDifferent(oneMoveCards)) {
+            moveHistory.add(oneMoveCards);
+        }
+    }
+
+    private List<ObservableList<Card>> makeMove() {
         List<ObservableList<Card>> oneMoveCards = new ArrayList<>();
         oneMoveCards = addCardsToList(game.getStockPile(), oneMoveCards);
         oneMoveCards = addCardsToList(game.getDiscardPile(), oneMoveCards);
@@ -26,7 +35,20 @@ public class MoveHistory{
         for(Pile pile: game.getTableauPiles()) {
             oneMoveCards = addCardsToList(pile, oneMoveCards);
         }
-        moveHistory.add(oneMoveCards);
+        return oneMoveCards;
+    }
+
+    private Boolean checkLastMoveIsDifferent(List<ObservableList<Card>> oneMoveCards) {
+        if(moveHistory.isEmpty()) {
+            return true;
+        }
+        List<ObservableList<Card>> lastMoveCards = moveHistory.get(moveHistory.size() - 1);
+        for(int i = 0; i < lastMoveCards.size(); i++) {
+            if(oneMoveCards.get(i).size() != lastMoveCards.get(i).size()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<ObservableList<Card>> addCardsToList(Pile pile, List<ObservableList<Card>> oneMoveCards) {
@@ -38,6 +60,10 @@ public class MoveHistory{
 
     protected void loadUndoMove() {
         Pile pile;
+
+        while(!checkLastMoveIsDifferent(makeMove())) {
+            moveHistory.remove(moveHistory.size() - 1);
+        }
 
         if(!moveHistory.isEmpty()) {
             List<ObservableList<Card>> lastMove = FXCollections.observableArrayList();
@@ -74,12 +100,14 @@ public class MoveHistory{
             card = pile.getCards().get(j);
             card.setContainingPile(pile);
 
-            if(pile.getPileType() == Pile.PileType.STOCK) {
-                card.DownFaceDown();
-            } else if(pile.getPileType() == Pile.PileType.TABLEAU) {
+            if(pile.getPileType() == Pile.PileType.STOCK && !card.isFaceDown()) {
+                card.flip();
+            } else if(pile.getPileType() == Pile.PileType.DISCARD && card.isFaceDown()) {
+                card.flip();
+            } else if(pile.getPileType() == Pile.PileType.TABLEAU && !card.isFaceDown()) {
                 if(j < pile.numOfCards() - 1){
                     if (!Card.isNextCorrect(card, pile.getCards().get(j + 1))) {
-                        card.DownFaceDown();
+                        card.flip();
                     }
                 }
             }
@@ -87,6 +115,7 @@ public class MoveHistory{
             card.setLayoutX(pile.getLayoutX());
             card.setLayoutY(j * pile.getCardGap() + pile.getLayoutY());
             card.setImage(card.isFaceDown() ? card.backFace : card.frontFace);
+          
         }
     }
 
