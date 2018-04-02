@@ -37,7 +37,7 @@ public class Game extends Pane {
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
-    protected static double DISCARD_GAP = 40;
+    private static double DISCARD_GAP = 40;
 
     protected MoveHistory getMoves() {
         return this.moves;
@@ -80,6 +80,9 @@ public class Game extends Pane {
 
     private void cardGoToPile(Card card) {
         if(!isCardLastOnPile(card)) {
+            return;
+        }
+        if(card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
             return;
         }
         List<Pile> piles = new ArrayList<>();

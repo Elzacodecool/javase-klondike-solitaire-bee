@@ -25,7 +25,6 @@ public class MoveHistory{
         List<ObservableList<Card>> oneMoveCards = makeOneMoveCards();
         Map<Card, Boolean> oneMoveFaceDown = makeOneMoveFaceDown(oneMoveCards);
         Map<Card, Double> OneMoveDiscardLayoutX = makeOneMoveLayoutX(game.getDiscardPile());
-
         if(checkLastMoveIsDifferent(oneMoveCards)) {
             cardsHistory.add(oneMoveCards);
             faceDownHistory.add(oneMoveFaceDown);
@@ -38,13 +37,7 @@ public class MoveHistory{
         Map<Card, Double> oneMoveLayuoutX = new HashMap<>();
         Double gap;
         for(Card card: pile.getCards()) {
-            if(card.getLayoutX() == pile.getLayoutX()) {
-                gap = (double) 0;
-            } else if(card.getLayoutX() - game.DISCARD_GAP == pile.getLayoutX()) {
-                gap = game.DISCARD_GAP;
-            } else {
-                gap = 2 * game.DISCARD_GAP;
-            }
+            gap = card.getLayoutX() - pile.getLayoutX();
             oneMoveLayuoutX.put(card, gap);
         }
 
@@ -85,12 +78,11 @@ public class MoveHistory{
     }
 
     private Boolean checkLastMoveIsDifferent(List<ObservableList<Card>> oneMoveCards) {
-        List<ObservableList<Card>> lastMoveCards = cardsHistory.get(cardsHistory.size() - 1);
-
         if(cardsHistory.isEmpty()) {
             return true;
         }
-        
+        List<ObservableList<Card>> lastMoveCards = cardsHistory.get(cardsHistory.size() - 1);
+
         for(int i = 0; i < lastMoveCards.size(); i++) {
             if(oneMoveCards.get(i).size() != lastMoveCards.get(i).size()) {
                 return true;
