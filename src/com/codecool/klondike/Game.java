@@ -38,6 +38,7 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
     private static double DISCARD_GAP = 40;
+    private int countDiscardCards;
 
     protected MoveHistory getMoves() {
         return this.moves;
@@ -63,7 +64,7 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {  
-            for(int i = 0; i < 3; i++) {
+            for(int i = 0; i < this.countDiscardCards; i++) {
                 card = stockPile.getTopCard();
                 card.moveToPile(discardPile);
                 card.flip();
@@ -200,10 +201,15 @@ public class Game extends Pane {
         return card.getContainingPile().getTopCard() == card;
     }
 
-    public Game() {
+    public Game(int count) {
+        this.countDiscardCards = count;
         deck = getRandomDeck();        
         initPiles();
         dealCards();
+    }
+
+    public Game() {
+        this(1);
     }
 
     private List <Card> getRandomDeck() {
