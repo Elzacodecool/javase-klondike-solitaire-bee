@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Pile extends Pane {
+public class Pile extends Pane implements Cloneable  {
 
     private PileType pileType;
     private String name;
@@ -38,6 +38,10 @@ public class Pile extends Pane {
 
     public ObservableList<Card> getCards() {
         return cards;
+    }
+
+    protected void setCards(ObservableList<Card> cards) {
+        this.cards = cards;
     }
 
     public int numOfCards() {

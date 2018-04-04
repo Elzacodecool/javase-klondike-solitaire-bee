@@ -23,7 +23,7 @@ import com.codecool.klondike.Pile.PileType;
 import java.util.Collections;
 
 public class Game extends Pane {
-
+    private MoveHistory moves = new MoveHistory(this);
     private List<Card> deck = new ArrayList<>();
 
     private Pile stockPile;
@@ -38,11 +38,31 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
+    protected MoveHistory getMoves() {
+        return this.moves;
+    }
+
+    protected Pile getStockPile() {
+        return this.stockPile;
+    }
+
+    protected Pile getDiscardPile() {
+        return this.discardPile;
+    }
+
+    protected List<Pile> getFoundationPiles() {
+        return this.foundationPiles;
+    }
+
+    protected List<Pile> getTableauPiles() {
+        return this.tableauPiles;
+    }
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
-
+        
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+            this.moves.addMoveToHistory();            
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -99,7 +119,7 @@ public class Game extends Pane {
         
             for(Card draggedCard: draggedCards) {
                 draggedCard.getDropShadow().setRadius(20);
-                draggedCard.getDropShadow().setOffsetX(10);
+                // draggedCard.getDropShadow().setOffsetX(10);
                 draggedCard.getDropShadow().setOffsetX(10);
                 draggedCard.getDropShadow().setOffsetY(10);
 
@@ -206,6 +226,7 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
+        card.setOnMouseEntered(onMouseReleasedHandler);
     }
 
     public void refillStockFromDiscard() {
@@ -256,7 +277,9 @@ public class Game extends Pane {
             if (!pile.equals(card.getContainingPile()) &&
                     isOverPile(card, pile) &&
                     isMoveValid(card, pile))
+                
                 result = pile;
+                this.moves.addMoveToHistory();
         }
         return result;
     }
@@ -268,7 +291,7 @@ public class Game extends Pane {
             return card.getBoundsInParent().intersects(pile.getTopCard().getBoundsInParent());
     }
 
-    private void handleValidMove(Card card, Pile destPile) {
+    protected void handleValidMove(Card card, Pile destPile) {
         String msg = null;
         if (destPile.isEmpty()) {
             if (destPile.getPileType().equals(Pile.PileType.FOUNDATION))

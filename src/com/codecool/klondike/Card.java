@@ -15,8 +15,8 @@ public class Card extends ImageView {
     private Rank rank;
     private boolean faceDown;
 
-    private Image backFace;
-    private Image frontFace;
+    protected Image backFace;
+    protected Image frontFace;
     private Pile containingPile;
     private DropShadow dropShadow;
 
@@ -46,6 +46,10 @@ public class Card extends ImageView {
 
     public boolean isFaceDown() {
         return faceDown;
+    }
+
+    public void DownFaceDown() {
+        this.faceDown = true;
     }
 
     public String getShortName() {
