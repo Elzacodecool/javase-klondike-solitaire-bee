@@ -48,8 +48,7 @@ public class Game extends Pane {
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }  
-        if(e.getClickCount() == 2){
-            System.out.println("Double click");
+        if(e.getClickCount() == 2 && (!card.isFaceDown())){
             for(Pile pile : foundationPiles) {
                 if (Card.isPlaceForCardInFoundation(card, pile)) {
                     card.moveToPile(pile);
@@ -57,6 +56,24 @@ public class Game extends Pane {
                 }
             }
         }  
+         
+        if (isStockAndDiscardEmpty() && allCardVisible()) {
+            while (!isGameWon()) {
+                for(Pile pile : tableauPiles) {
+                    if(pile.numOfCards() > 0) {
+                        Card tableauCard = pile.getTopCard();
+                        for (Pile foundationpile : foundationPiles) {
+                            System.out.println("tableauCard: "+tableauCard.getShortName()+" pile: "+ foundationpile.getName());
+                            System.out.println("Card.isPlaceForCardInFoundation: "+Card.isPlaceForCardInFoundation(tableauCard, foundationpile));
+                            if (Card.isPlaceForCardInFoundation(tableauCard, foundationpile)) {
+                                System.out.println("moveToPile: "+tableauCard.getShortName());
+                                tableauCard.moveToPile(foundationpile);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -93,6 +110,24 @@ public class Game extends Pane {
         }
     };
 
+    private boolean isStockAndDiscardEmpty() {
+        if (stockPile.numOfCards() > 0 || discardPile.numOfCards() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean allCardVisible() {
+        for (Pile pile : tableauPiles) {
+            for (Card card : pile.getCards()) {
+                if (card.isFaceDown()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void addCards(Card firstCard) {
         Boolean hasCard = false;
         for(Card card: firstCard.getContainingPile().getCards()) {
@@ -124,7 +159,8 @@ public class Game extends Pane {
 
     public boolean isGameWon() {
         for(Pile pile: foundationPiles) {
-            if (pile.numOfCards() != 2) {
+            System.out.println("isGameWon: " + pile.numOfCards());
+            if (pile.numOfCards() != 13) {
                 return false;
             }
         }       
