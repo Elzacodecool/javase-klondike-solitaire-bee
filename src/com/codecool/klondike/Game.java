@@ -63,22 +63,30 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {  
-            for(int i = 0; i < this.countDiscardCards; i++) {
-                card = stockPile.getTopCard();
-                card.moveToPile(discardPile);
-                card.flip();
-                card.setLayoutX(i * DISCARD_GAP + card.getLayoutX());
-            }         
-            card.setMouseTransparent(false);
-            System.out.println("Placed " + card + " to the waste.");
-        }  
         if(e.getClickCount() == 2){
             System.out.println("Double click");
             cardGoToPile(card);
+            automagicEnding();
         }  
+        
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {  
+            moveToDiscard();
+        } 
     };
 
+    private void moveToDiscard() {
+        Card card = stockPile.getTopCard();
+
+        for(int i = 0; i < this.countDiscardCards; i++) {
+            card = stockPile.getTopCard();
+            card.moveToPile(discardPile);
+            card.flip();
+            card.setLayoutX(i * DISCARD_GAP + card.getLayoutX());
+        }         
+        card.setMouseTransparent(false);
+        System.out.println("Placed " + card + " to the waste.");
+    }
+ 
     private void cardGoToPile(Card card) {
         if(!isCardLastOnPile(card)) {
             return;
@@ -91,12 +99,32 @@ public class Game extends Pane {
         piles.addAll(tableauPiles);
 
         for(Pile pile : piles) {
-                if (isMoveValid(card, pile)) {
-                    card.moveToPile(pile);
-                    flipIfNeeded();
-                    return;
+            if (isMoveValid(card, pile)) {
+                card.moveToPile(pile);
+                flipIfNeeded();
+                return;
+            }
+        }
+    };
+
+    private void automagicEnding() {
+        if (isStockAndDiscardEmpty() && allCardVisible()) {
+            while (!isGameWon()) {
+                for(Pile pile : tableauPiles) {
+                    if(pile.numOfCards() > 0) {
+                        Card tableauCard = pile.getTopCard();
+                        for (Pile foundationpile : foundationPiles) {
+                            System.out.println("tableauCard: "+tableauCard.getShortName()+" pile: "+ foundationpile.getName());
+                            System.out.println("Card.isPlaceForCardInFoundation: "+Card.isPlaceForCardInFoundation(tableauCard, foundationpile));
+                            if (Card.isPlaceForCardInFoundation(tableauCard, foundationpile)) {
+                                System.out.println("moveToPile: "+tableauCard.getShortName());
+                                tableauCard.moveToPile(foundationpile);
+                            }
+                        }
+                    }
                 }
             }
+        }
     }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -146,6 +174,24 @@ public class Game extends Pane {
         }
     }
 
+    private boolean isStockAndDiscardEmpty() {
+        if (stockPile.numOfCards() > 0 || discardPile.numOfCards() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean allCardVisible() {
+        for (Pile pile : tableauPiles) {
+            for (Card card : pile.getCards()) {
+                if (card.isFaceDown()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void addCards(Card firstCard) {
         Boolean hasCard = false;
         for(Card card: firstCard.getContainingPile().getCards()) {
@@ -164,22 +210,23 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
+
         if (pile == null) {
             pile = getValidIntersectingPile(card, foundationPiles);
         }
-        
-        if(pile != null) {
-            handleValidMove(card, pile);
-        } else {
-            MouseUtil.slideBack(card);
+
+        if (pile == null) {
+            pile = card.getContainingPile();
         }
         
+        handleValidMove(card, pile);
         draggedCards.clear();     
     };
 
     public boolean isGameWon() {
         for(Pile pile: foundationPiles) {
-            if (pile.numOfCards() != 2) {
+            System.out.println("isGameWon: " + pile.numOfCards());
+            if (pile.numOfCards() != 13) {
                 return false;
             }
         }       
