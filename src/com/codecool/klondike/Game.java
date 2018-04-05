@@ -284,13 +284,15 @@ public class Game extends Pane {
         Collections.reverse(discardPile.getCards());
         Iterator<Card> iter = discardPile.getCards().iterator();
 
-        while(iter.hasNext()) {
-            Card card = iter.next();
-            card.flip();
-            iter.remove();
-            stockPile.addCard(card);
-        }   
-        System.out.println("Stock refilled from discard pile.");
+        if (stockPile.isEmpty()) {
+            while(iter.hasNext()) {
+                Card card = iter.next();
+                card.flip();
+                iter.remove();
+                stockPile.addCard(card);
+            }   
+            System.out.println("Stock refilled from discard pile.");
+        }
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
