@@ -14,7 +14,7 @@ public class Klondike extends Application {
 
     private static final double WINDOW_WIDTH = 1400;
     private static final double WINDOW_HEIGHT = 900;
-    Button changeThemeButton;
+    Button settingsButton;
     Button newGame;
     Button undo;
 
@@ -28,8 +28,9 @@ public class Klondike extends Application {
     }
 
     public void startGame(Stage primaryStage){
+        int gameMode = Common.loadGameMode();
         Card.loadCardImages();
-        Game game = new Game();
+        Game game = new Game(gameMode);
         game.setTableBackground(new Image(Common.loadThemeSettings().get(0)));
 
         initializeButtons(game, primaryStage);
@@ -59,13 +60,13 @@ public class Klondike extends Application {
     }
 
     private void initializeThemesButton(Game game){
-        changeThemeButton = new Button("Themes");
-        changeThemeButton.setLayoutY(40);
-        changeThemeButton.setLayoutX(10);
-        changeThemeButton.setOnAction(e -> {
-            ThemesBox.display("Themes", "", game);
+        settingsButton = new Button("Settings");
+        settingsButton.setLayoutY(40);
+        settingsButton.setLayoutX(10);
+        settingsButton.setOnAction(e -> {
+            SettingsBox.display("Settings", "", game);
         });
-        game.getChildren().add(changeThemeButton);
+        game.getChildren().add(settingsButton);
     }
 
     private void initializeUndoButton(Game game){
