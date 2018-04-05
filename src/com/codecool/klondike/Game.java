@@ -124,8 +124,16 @@ public class Game extends Pane {
                     }
                 }
             }
+            WinBox.display("Winner!", "Congratulations! You won!");
+            for (Pile foundationpile : foundationPiles) {
+                foundationpile.clear();
+            }
+            deck = getRandomDeck();        
+            initPiles();
+            dealCards();
         }
     }
+
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
