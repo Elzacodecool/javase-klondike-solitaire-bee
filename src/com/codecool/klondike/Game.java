@@ -69,7 +69,8 @@ public class Game extends Pane {
             automagicEnding();
         }  
         
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {  
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK 
+            && card == card.getContainingPile().getTopCard()) {  
             moveToDiscard();
         } 
     };
@@ -125,12 +126,12 @@ public class Game extends Pane {
                 }
             }
             WinBox.display("Winner!", "Congratulations! You won!");
-            for (Pile foundationpile : foundationPiles) {
-                foundationpile.clear();
-            }
-            deck = getRandomDeck();        
-            initPiles();
-            dealCards();
+            // for (Pile foundationpile : foundationPiles) {
+            //     foundationpile.clear();
+            // }
+            // deck = getRandomDeck();        
+            // initPiles();
+            // dealCards();
         }
     }
 
