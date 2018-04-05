@@ -74,7 +74,7 @@ public class Klondike extends Application {
         undo.setLayoutX(10);
         undo.setOnAction(e -> {
             System.out.println("Undo");
-            //Put function here
+            game.getMoves().loadUndoMove();
         });
         game.getChildren().add(undo);
     }
